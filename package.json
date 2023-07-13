@@ -41,6 +41,7 @@
     "react-hot-toast": "^2.4.1",
     "react-intersection-observer": "^9.4.4",
     "react-markdown": "^8.0.7",
+    "react-query": "^3.28.8",
     "react-syntax-highlighter": "^15.5.0",
     "react-textarea-autosize": "^8.4.1",
     "remark-gfm": "^3.0.1",

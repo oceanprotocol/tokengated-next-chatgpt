@@ -26,6 +26,8 @@
     "@radix-ui/react-tooltip": "^1.0.6",
     "@supabase/auth-helpers-nextjs": "^0.7.2",
     "@supabase/supabase-js": "^2.26.0",
+    "@tanstack/react-query": "^4.29.19",
+    "@tanstack/react-query-devtools": "^4.29.19",
     "@thirdweb-dev/react": "^3.14.13",
     "@thirdweb-dev/sdk": "^3.10.33",
     "@vercel/og": "^0.5.7",

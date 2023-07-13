@@ -5,8 +5,6 @@ import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import { ThemeProviderProps } from 'next-themes/dist/types'
 import { TooltipProvider } from '@/components/ui/tooltip'
 
-import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
-
 import {
   RainbowKitProvider,
   getDefaultWallets,
@@ -66,19 +64,16 @@ const wagmiConfig = createConfig({
 });
 
 export function Providers({ children, ...props }: ThemeProviderProps) {
-  const [client] = React.useState(new QueryClient());
   const [mounted, setMounted] = React.useState(false);
   React.useEffect(() => setMounted(true), []);
   return (
     <NextThemesProvider {...props}>
       <TooltipProvider>
-        <QueryClientProvider client={client}>
-          <WagmiConfig config={wagmiConfig}>
-            <RainbowKitProvider chains={chains} appInfo={demoAppInfo}>
-              {mounted && children}
-            </RainbowKitProvider>
+        <WagmiConfig config={wagmiConfig}>
+          <RainbowKitProvider chains={chains} appInfo={demoAppInfo}>
+            {mounted && children}
+          </RainbowKitProvider>
           </WagmiConfig>
-        </QueryClientProvider>
       </TooltipProvider>
     </NextThemesProvider>
   );

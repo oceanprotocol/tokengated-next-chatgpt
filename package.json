@@ -23,12 +23,13 @@
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-switch": "^1.0.3",
     "@radix-ui/react-tooltip": "^1.0.6",
+    "@rainbow-me/rainbowkit": "^1.0.6",
     "@supabase/auth-helpers-nextjs": "^0.7.2",
     "@supabase/supabase-js": "^2.26.0",
     "@vercel/analytics": "^1.0.1",
     "@vercel/og": "^0.5.7",
     "ai": "^2.1.6",
-    "class-variance-authority": "^0.4.0",
+    "class-variance-authority": "^0.6.1",
     "clsx": "^1.2.1",
     "focus-trap-react": "^10.1.1",
     "nanoid": "^4.0.2",
@@ -43,7 +44,9 @@
     "react-syntax-highlighter": "^15.5.0",
     "react-textarea-autosize": "^8.4.1",
     "remark-gfm": "^3.0.1",
-    "remark-math": "^5.1.1"
+    "remark-math": "^5.1.1",
+    "viem": "~1.2.9",
+    "wagmi": "1.3.8"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.9",

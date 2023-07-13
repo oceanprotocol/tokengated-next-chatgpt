@@ -2,7 +2,13 @@
 module.exports = {
   reactStrictMode: true,
   experimental: {
-    serverActions: true
+    serverActions: true,
+    appDir: true
+  },
+  webpack: config => {
+    config.resolve.fallback = { fs: false, net: false, tls: false };
+    config.externals.push('pino-pretty', 'lokijs', 'encoding');
+    return config;
   },
   images: {
     remotePatterns: [

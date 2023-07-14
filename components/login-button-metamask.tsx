@@ -41,7 +41,7 @@ export function LoginButtonMetamask({
       
         try {
           // 1. Get a nonce from the server
-          const nonceResponse = await fetch(`/api/nonce`, {
+          const nonceResponse = await fetch(`/api/web3auth/nonce`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -55,7 +55,7 @@ export function LoginButtonMetamask({
           console.log('Nonce retrieval successful:', nonce);
 
           // 2. Ask the user to sign a message
-          const message = `Please sign this message to confirm your identity. Web3Auth Nonce: ${nonce}`;
+          const message = process.env.NEXT_PUBLIC_WEB3AUTH_MESSAGE + nonce;
           const signedMessage = await signMessage({
             message: message,
           })
@@ -63,17 +63,17 @@ export function LoginButtonMetamask({
           console.log('Signed message:', signedMessage);
       
           // // 3. Send the signed message to our API
-          // const response = await fetch(`/api/login`, {
-          //   method: 'POST',
-          //   headers: {
-          //     'Content-Type': 'application/json',
-          //   },
-          //   body: JSON.stringify({
-          //     address: address,
-          //     signedMessage,
-          //     nonce,
-          //   }),
-          // });
+          const response = await fetch(`/api/web3auth/login`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              address: address,
+              signedMessage,
+              nonce,
+            }),
+          });
       
           // const data = await response.json();
       

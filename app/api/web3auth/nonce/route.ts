@@ -17,18 +17,40 @@ export async function POST(req: Request) {
 
   try {
     const nonce = Math.floor(Math.random() * 1000000);
-    await supabase
-      .from('users')
-      .update({ 
-        auth: {
-          genNonce: nonce,
-          lastAuth: new Date().toISOString(),
-          lastAuthStatus: "pending"
-        }
-      }) 
-      .eq('address', address)
+    
+    const { data, error } = await supabase
+    .from('users')
+    .select('address')
+    .eq('address', address)
+    .single()
 
-      return NextResponse.json({ nonce }, { status: 200 })
+    if (error) {  
+      await supabase
+      .from('users')
+      .insert([
+        { 
+          address: address,
+          auth: {
+            genNonce: nonce,
+            lastAuth: new Date().toISOString(),
+            lastAuthStatus: "pending"
+          }
+        }
+      ])
+    }
+
+    await supabase
+    .from('users')
+    .update({ 
+      auth: {
+        genNonce: nonce,
+        lastAuth: new Date().toISOString(),
+        lastAuthStatus: "pending"
+      }
+    }) 
+    .eq('address', address)
+
+    return NextResponse.json({ nonce }, { status: 200 })
   } catch (error) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
   }

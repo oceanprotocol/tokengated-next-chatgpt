@@ -31,7 +31,7 @@
     "ai": "^2.1.6",
     "class-variance-authority": "^0.6.1",
     "clsx": "^1.2.1",
-    "ethers": "^6.6.3",
+    "ethers": "^5.7.2",
     "focus-trap-react": "^10.1.1",
     "nanoid": "^4.0.2",
     "next": "13.4.7-canary.1",

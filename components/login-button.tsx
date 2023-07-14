@@ -8,13 +8,13 @@ import { Button, type ButtonProps } from '@/components/ui/button'
 import { IconGitHub, IconSpinner } from '@/components/ui/icons'
 
 interface LoginButtonProps extends ButtonProps {
-  showGithubIcon?: boolean
+  showIcon?: boolean
   text?: string
 }
 
 export function LoginButton({
   text = 'Login with GitHub',
-  showGithubIcon = true,
+  showIcon = true,
   className,
   ...props
 }: LoginButtonProps) {
@@ -37,7 +37,7 @@ export function LoginButton({
     >
       {isLoading ? (
         <IconSpinner className="mr-2 animate-spin" />
-      ) : showGithubIcon ? (
+      ) : showIcon ? (
         <IconGitHub className="mr-2" />
       ) : null}
       {text}

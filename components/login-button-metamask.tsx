@@ -16,13 +16,13 @@ import {
 import { signMessage } from '@wagmi/core'
 
 interface LoginButtonProps extends ButtonProps {
-  showGithubIcon?: boolean
+  showIcon?: boolean
   text?: string
 }
 
 export function LoginButtonMetamask({
   text = 'Login with Metamask',
-  showGithubIcon = true,
+  showIcon = true,
   className,
   ...props
 }: LoginButtonProps) {
@@ -31,7 +31,7 @@ export function LoginButtonMetamask({
   const supabase = createClientComponentClient()
 
   const { address, isConnected } = useAccount();
-  const { chains } = useNetwork();
+  // const { chains } = useNetwork();
   
   return (
     <Button
@@ -40,14 +40,11 @@ export function LoginButtonMetamask({
         setIsLoading(true)
       
         try {
-          console.log('Address:', address);
-
           // 1. Get a nonce from the server
-          const nonceResponse = await fetch(`${process.env.NEXT_PUBLIC_SERVER_ENDPOINT}/api/nonce`, {
+          const nonceResponse = await fetch(`/api/nonce`, {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': '*',
+              'Content-Type': 'application/json'
             },
             body: JSON.stringify({
               address: address,
@@ -98,9 +95,7 @@ export function LoginButtonMetamask({
     >
       {isLoading ? (
         <IconSpinner className="mr-2 animate-spin" />
-      ) :!isConnected ? (
-        <p>Please connect your wallet</p>
-      ) : showGithubIcon ? (
+      ) : showIcon ? (
         <IconMetamask className="mr-2" />
       ) : null}
       {text}

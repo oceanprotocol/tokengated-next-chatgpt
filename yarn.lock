@@ -769,11 +769,6 @@
   dependencies:
     "@babel/runtime" "^7.13.10"
 
-"@rainbow-me/rainbowkit-siwe-next-auth@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@rainbow-me/rainbowkit-siwe-next-auth/-/rainbowkit-siwe-next-auth-0.2.0.tgz#ea1004c38990b6a14abec61f2f6286d7bdc16e4a"
-  integrity sha512-U0GPPc5tRhNSLgdLb4sU6eha7qxIJmfNbUmcGeQGh7IR/jw3xFdYYKYaHcEG8rB09/yfEMQodwJiV+vrjta6zQ==
-
 "@rainbow-me/rainbowkit@^1.0.6":
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/@rainbow-me/rainbowkit/-/rainbowkit-1.0.6.tgz#6c840eaf6019e9eb6841565880f6ea8090f1e9f5"

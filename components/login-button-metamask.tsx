@@ -55,10 +55,12 @@ export function LoginButtonMetamask({
           console.log('Nonce retrieval successful:', nonce);
 
           // 2. Ask the user to sign a message
-          // const message = `Please sign this message to confirm your identity. Nonce: ${nonce}`;
-          // const signedMessage = await signMessage({
-          //   message: message,
-          // })
+          const message = `Please sign this message to confirm your identity. Web3Auth Nonce: ${nonce}`;
+          const signedMessage = await signMessage({
+            message: message,
+          })
+
+          console.log('Signed message:', signedMessage);
       
           // // 3. Send the signed message to our API
           // const response = await fetch(`/api/login`, {

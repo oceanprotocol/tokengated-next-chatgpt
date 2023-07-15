@@ -51,15 +51,16 @@ export function LoginButtonMetamask({
             }),
           });
 
-          const { nonce } = await nonceResponse.json();
-          console.log('Nonce retrieval successful:', nonce);
+          const { user: [user] } = await nonceResponse.json();
+          console.log('User/Nonce retrieval successful:', user);
 
           // 2. Ask the user to sign a message
-          const message = process.env.NEXT_PUBLIC_WEB3AUTH_MESSAGE + nonce;
+          const message = process.env.NEXT_PUBLIC_WEB3AUTH_MESSAGE + user.auth.genNonce;
           const signedMessage = await signMessage({
             message: message,
           })
 
+          console.log('message message:', signedMessage);
           console.log('Signed message:', signedMessage);
       
           // // 3. Send the signed message to our API
@@ -70,12 +71,14 @@ export function LoginButtonMetamask({
             },
             body: JSON.stringify({
               address: address,
-              signedMessage,
-              nonce,
-            }),
-          });
+              signedMessage: signedMessage,
+              nonce: user.auth.genNonce
+            })
+          })
       
-          // const data = await response.json();
+          const data = await response.json()
+
+          console.log('web3auth login data:', data)
       
           // // Handle the response from the API
           // if (response.ok) {

@@ -17,40 +17,46 @@ export async function POST(req: Request) {
 
   try {
     const nonce = Math.floor(Math.random() * 1000000);
-    
-    const { data, error } = await supabase
+    console.log("::::::::: nonce check")
+
+    let { data, error } = await supabase
     .from('users')
     .select('address')
     .eq('address', address)
     .single()
 
-    if (error) {  
-      await supabase
+    if (!data || error) {
+      const { data: user, error: upsertError } = await supabase
       .from('users')
-      .insert([
+      .upsert([
         { 
           address: address,
           auth: {
             genNonce: nonce,
             lastAuth: new Date().toISOString(),
             lastAuthStatus: "pending"
-          }
+          },
         }
       ])
+      .select()   
+      return NextResponse.json({ user }, { status: 200 })
+    } else {
+      const { data: user, error: upsertError } = await supabase
+      .from('users')
+      .update([
+        { 
+          address: address,
+          auth: {
+            genNonce: nonce,
+            lastAuth: new Date().toISOString(),
+            lastAuthStatus: "pending"
+          },
+        }
+      ])
+      .eq('address', address)
+      .select()
+      return NextResponse.json({ user }, { status: 200 })
     }
-
-    await supabase
-    .from('users')
-    .update({ 
-      auth: {
-        genNonce: nonce,
-        lastAuth: new Date().toISOString(),
-        lastAuthStatus: "pending"
-      }
-    }) 
-    .eq('address', address)
-
-    return NextResponse.json({ nonce }, { status: 200 })
   } catch (error) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
   }

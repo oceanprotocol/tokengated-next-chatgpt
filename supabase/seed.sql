@@ -8,8 +8,16 @@ create table
     constraint users_pkey primary key (id)
   ) tablespace pg_default;
 
--- Create a service role policy to create users for web3auth
-CREATE POLICY "service_role_full_access"
-  ON users FOR select 
-  to service_role
-  USING (true);
+-- Create a service_role policy on public.users
+CREATE POLICY service_role_access ON public.users
+AS PERMISSIVE FOR ALL
+TO service_role
+USING (auth.role() = 'service_role')
+WITH CHECK (auth.role() = 'service_role');
+
+-- Create an authenticated policy on public.users
+CREATE POLICY authenticated_users_can_write ON public.users
+AS PERMISSIVE FOR UPDATE
+TO authenticated
+USING (auth.role() = 'authenticated')
+WITH CHECK (auth.role() = 'authenticated');

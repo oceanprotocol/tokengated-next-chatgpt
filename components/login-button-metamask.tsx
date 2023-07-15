@@ -77,17 +77,16 @@ export function LoginButtonMetamask({
           })
       
           const data = await response.json()
-
           console.log('web3auth login data:', data)
-      
-          // // Handle the response from the API
-          // if (response.ok) {
-          //   // The verification was successful
-          //   console.log('Verification successful:', data);
-          // } else {
-          //   // The verification failed
-          //   console.error('Verification failed:', data);
-          // }
+          
+          // Handle the response from the API
+          if (response.ok) {
+            // The verification was successful
+            console.log('Verification successful!');
+          } else {
+            // The verification failed
+            console.error('Verification failed!');
+          }
         } catch (err) {
           console.error('An error occurred:', err);
         } finally {

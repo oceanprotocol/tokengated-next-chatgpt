@@ -4,6 +4,25 @@
 yarn add @rainbow-me/rainbowkit@latest
 ```
 
+// 1. [Supabase] Create public.user table
+```
+```
+
+// 1. [Supabase] Create RLS policies in public.users table
+```
+```
+
+// 1. [Supabase] Create RLS policies in auth.users table
+```
+```
+
+// 1. [Supabase-SQL Editor] Create a service_role view of auth.users.
+Why? filter-by-address
+```
+create view public.auth_users as select * from auth.users;
+revoke all on public.auth_users from anon, authenticated;
+```
+
 <a href="https://chat.vercel.ai/">
   <img alt="Next.js 13 and app template Router-ready AI chatbot." src="https://chat.vercel.ai/opengraph-image.png" />
   <h1 align="center">Next.js AI Chatbot</h1>

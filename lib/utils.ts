@@ -2,6 +2,8 @@ import { clsx, type ClassValue } from 'clsx'
 import { customAlphabet } from 'nanoid'
 import { twMerge } from 'tailwind-merge'
 
+import jwt from 'jsonwebtoken'
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
@@ -40,4 +42,13 @@ export function formatDate(input: string | number | Date): string {
     day: 'numeric',
     year: 'numeric'
   })
+}
+
+export function signToken(payload: any) {
+  const jwt_secret = process.env.NEXT_PUBLIC_JWT_SECRET;
+  if (!jwt_secret) {
+    throw new Error('JWT_SECRET environment variable is required');
+  }
+  
+  return jwt.sign(payload, jwt_secret);
 }

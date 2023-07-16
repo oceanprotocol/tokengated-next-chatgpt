@@ -62,11 +62,9 @@ export function verifyToken(request: NextRequest) {
     }
 
     const decoded = jwt.verify(token, process.env.NEXT_PUBLIC_SUPABASE_JWT_SECRET);
-    // Integrate token w/ auth
-    // return decoded;
-    return token;
+    return decoded;
   } catch (err) {
-    return false;
+    return err;
   }
 }
 

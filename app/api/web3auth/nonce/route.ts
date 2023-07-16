@@ -14,16 +14,11 @@ export async function POST(req: Request) {
 
   try {
     const nonce = Math.floor(Math.random() * 1000000);
-    console.log("::::::::: nonce check")
-    console.log("::::::::: address:", address)
-
     let { data, error } = await srSupabase
     .from('users')
     .select('*')
     .eq('address', address)
     .single()
-
-    console.log("::::::::: existing user:", data)
 
     if (!data || error) {
       const { data: user, error: upsertError } = await srSupabase
@@ -39,8 +34,6 @@ export async function POST(req: Request) {
         }
       ])
       .select()   
-      console.log("::::::::: new user:", user)
-      console.log("::::::::: new upsertError:", upsertError)
 
       if (data || !upsertError) {
         return NextResponse.json({ user }, { status: 200 })
@@ -60,8 +53,7 @@ export async function POST(req: Request) {
       ])
       .eq('address', address)
       .select()
-      console.log("::::::::: updated user:", user)
-      console.log("::::::::: updated updateError:", updateError)
+
       if (data || !updateError) {
         return NextResponse.json({ user }, { status: 200 })
       }

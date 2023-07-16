@@ -1,3 +1,4 @@
+import { createClient } from '@supabase/supabase-js'
 import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
 import { NextResponse } from 'next/server'
 
@@ -9,26 +10,34 @@ export async function middleware(req: NextRequest) {
   // Create a Supabase client configured to use cookies
   let supabase = createMiddlewareClient({ req, res })
 
+  // Refresh session if expired - required for Server Components
+  const {
+    data: { session }
+  } = await supabase.auth.getSession()
+
   // TODO - sign in via user w/ jwt to provide a session
   // Official Implementation: https://github.com/orgs/supabase/discussions/1849
   // 1. get jwt
   // 2. check if jwt is valid
   // 3. if !session but jwt is valid, create session
-  // const web3jwt = req.cookies.get('web3jwt')
-  // if (!session && web3jwt) {
-  //  // TODO - this is not working
-  //  const headers = { Authorization: `Bearer ${web3jwt}` }
-  //  supabase = createMiddlewareClient({ req, res }, "KEY", { headers })
-  //   supabase = createMiddlewareClient({ req, res }, 
-  //     options: { headers: { name: "Authorization", : `Bearer ${web3jwt}` } 
-  //   })
-  // update session
-  // }
+  console.log("req.cookies: ", req.cookies.getAll())
 
-  // Refresh session if expired - required for Server Components
-  const {
-    data: { session }
-  } = await supabase.auth.getSession()
+  const web3jwt = req.cookies.get('web3jwt')
+  if (!session && web3jwt) {
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+    const headers = { global: { headers: { Authorization: `Bearer ${web3jwt}` }}}
+    console.log("create new supabase client...")
+    
+    supabase = createClient(url, anonKey, headers)
+    console.log("supabase client:", supabase)
+
+    const {
+      data: { session }
+    } = await supabase.auth.getSession()
+
+    console.log("jwt session: ", session)
+  }
 
   // OPTIONAL: this forces users to be logged in to use the chatbot.
   // If you want to allow anonymous users, simply remove the check below.
@@ -55,17 +64,3 @@ export const config = {
     '/((?!share|api|_next/static|_next/image|favicon.ico).*)'
   ]
 }
-
-
-// from vercel/jwt-auth
-// export async function middleware(req: NextRequest) {
-//   const url = req.nextUrl
-
-//   if (url.searchParams.has('edge')) {
-//     const resOrPayload = await verifyAuth(req)
-
-//     return resOrPayload instanceof Response
-//       ? resOrPayload
-//       : jsonResponse(200, { nanoid: nanoid(), jwtID: resOrPayload.jti })
-//   }
-// }

@@ -39,9 +39,6 @@ export async function POST(req: Request) {
             .eq('raw_user_meta_data->>address', address)
             .single()
 
-            console.log("authUser: ", authUser)
-            console.log("authUserError: ", authUserError)
-
             if ( !authUser || authUserError ) {
                 // 4. If there's no auth.users.id for that address
                 const { data: newUser, error: newUserError } = await srSupabase.auth.admin.createUser({
@@ -49,8 +46,6 @@ export async function POST(req: Request) {
                     user_metadata: { address: address },
                     email_confirm: true
                 })
-
-                console.log("newUserCreated: ", newUser)
 
                 if (newUserError || !newUser) {
                     return NextResponse.json({ error: 'Failed to create auth user' }, { status: 500 })
@@ -62,8 +57,6 @@ export async function POST(req: Request) {
                 // selection from auth.users view is the user, assign
                 finalAuthUser = authUser
             }
-
-            console.log("finalAuthUser: ", finalAuthUser)
 
             // 5. Update public.users.id with auth.users.id
             const { data: updateUser, error: updateUserError } = await srSupabase
@@ -81,9 +74,6 @@ export async function POST(req: Request) {
             .eq('address', address)
             .select()
 
-            console.log("updateUser: ", updateUser)
-            console.log("updateUserError: ", updateUserError)
-            
             // 6. We sign the token and return it to client
             const token = signToken({
                 address: address, 
@@ -93,7 +83,7 @@ export async function POST(req: Request) {
             console.log("token: ", token)
 
             // 7. Set password based on token to avoid custom auth/sign-in flows
-            // TODO - Fix this
+            // TODO - Remove this
             const password = token.slice(0, 12);
             console.log('password:', password);
             await srSupabase.auth.updateUser({password: password})

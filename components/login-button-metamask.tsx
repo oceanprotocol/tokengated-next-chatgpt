@@ -54,17 +54,13 @@ export function LoginButtonMetamask({
           });
 
           const { user: [user] } = await nonceResponse.json();
-          console.log('User/Nonce retrieval successful:', user);
-
+          
           // 2. Ask the user to sign a message
           const message = process.env.NEXT_PUBLIC_WEB3AUTH_MESSAGE + user.auth.genNonce;
           const signedMessage = await signMessage({
             message: message,
           })
 
-          console.log('message message:', signedMessage);
-          console.log('Signed message:', signedMessage);
-      
           // // 3. Send the signed message to our API
           const response = await fetch(`/api/web3auth/login`, {
             method: 'POST',
@@ -83,20 +79,6 @@ export function LoginButtonMetamask({
             // The verification was successful
             const data = await response.json()
             console.log('Verification successful!', data)
-            
-            // TODO - Do not do this. This is a security risk.
-            // Auth needs to work w/ supabase & jwt
-            // setAuth does not work anymore => https://medium.com/@gracew/using-supabase-rls-with-a-custom-auth-provider-b31564172d5d
-            const password = data.token.slice(0, 12)
-            console.log('password:', password)
-            console.log('email:', userAddress + process.env.NEXT_PUBLIC_APP_DOMAN)
-            const session = await supabase.auth.signInWithPassword({
-              email: userAddress + process.env.NEXT_PUBLIC_APP_DOMAN,
-              password: password
-            })
-
-            console.log('session:', session)
-
           } else {
             // The verification failed
             console.error('Verification failed!');

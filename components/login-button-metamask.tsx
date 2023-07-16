@@ -77,8 +77,7 @@ export function LoginButtonMetamask({
           // Handle the response from the API
           if (response.ok) {
             // The verification was successful
-            const data = await response.json()
-            console.log('Verification successful!', data)
+            console.log('Verification successful!')
           } else {
             // The verification failed
             console.error('Verification failed!');

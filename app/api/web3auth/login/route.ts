@@ -82,14 +82,8 @@ export async function POST(req: Request) {
             }, { expiresIn: '24h' })
             console.log("token: ", token)
 
-            // 7. Set password based on token to avoid custom auth/sign-in flows
-            // TODO - Remove this
-            const password = token.slice(0, 12);
-            console.log('password:', password);
-            await srSupabase.auth.updateUser({password: password})
-
             const response = NextResponse.json(
-                {user: finalAuthUser, token: token}, 
+                'success', 
                 {status: 200}
             )
             response.cookies.set('web3jwt', token)

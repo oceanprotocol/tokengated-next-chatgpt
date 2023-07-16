@@ -59,7 +59,7 @@ export async function POST(req: Request) {
             }
 
             // 5. Update public.users.id with auth.users.id
-            const { data: updateUser, error: updateUserError } = await srSupabase
+            await srSupabase
             .from('users')
             .update([
                 { 

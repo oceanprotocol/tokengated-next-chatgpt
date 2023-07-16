@@ -1,52 +1,47 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { ThemeProvider as NextThemesProvider } from 'next-themes'
-import { ThemeProviderProps } from 'next-themes/dist/types'
-import { TooltipProvider } from '@/components/ui/tooltip'
+import * as React from 'react'
 
 import {
   RainbowKitProvider,
-  getDefaultWallets,
   connectorsForWallets,
-} from '@rainbow-me/rainbowkit';
+  getDefaultWallets
+} from '@rainbow-me/rainbowkit'
+import { WagmiConfig, configureChains, createConfig } from 'wagmi'
 import {
   argentWallet,
-  trustWallet,
   ledgerWallet,
-} from '@rainbow-me/rainbowkit/wallets';
-import { 
-  configureChains, 
-  createConfig, 
-  WagmiConfig 
-} from 'wagmi';
-import {
-  mainnet,
-  polygon,
-  goerli,
-} from 'wagmi/chains';
-import { publicProvider } from 'wagmi/providers/public';
+  trustWallet
+} from '@rainbow-me/rainbowkit/wallets'
+import { goerli, mainnet, polygon } from 'wagmi/chains'
+
+import { ApolloProvider } from '@apollo/client'
+import { ThemeProvider as NextThemesProvider } from 'next-themes'
+import { ThemeProviderProps } from 'next-themes/dist/types'
+import { TooltipProvider } from '@/components/ui/tooltip'
+import { client } from '@/graphql/client'
+import { publicProvider } from 'wagmi/providers/public'
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
     mainnet,
     polygon,
-    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [goerli] : []),
+    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [goerli] : [])
   ],
   [publicProvider()]
-);
+)
 
-const projectId = process.env.NEXT_PUBLIC_WC2_PROJECT_ID || '';
+const projectId = process.env.NEXT_PUBLIC_WC2_PROJECT_ID || ''
 
 const { wallets } = getDefaultWallets({
   appName: 'RainbowKit demo',
   projectId,
-  chains,
-});
+  chains
+})
 
 const demoAppInfo = {
-  appName: 'Rainbowkit Demo',
-};
+  appName: 'Rainbowkit Demo'
+}
 
 const connectors = connectorsForWallets([
   ...wallets,
@@ -55,31 +50,33 @@ const connectors = connectorsForWallets([
     wallets: [
       argentWallet({ projectId, chains }),
       trustWallet({ projectId, chains }),
-      ledgerWallet({ projectId, chains }),
-    ],
-  },
-]);
+      ledgerWallet({ projectId, chains })
+    ]
+  }
+])
 
 const wagmiConfig = createConfig({
   autoConnect: true,
   connectors,
   publicClient,
-  webSocketPublicClient,
-});
+  webSocketPublicClient
+})
 
 export function Providers({ children, ...props }: ThemeProviderProps) {
-  const [mounted, setMounted] = React.useState(false);
-  React.useEffect(() => setMounted(true), []);
+  const [mounted, setMounted] = React.useState(false)
+  React.useEffect(() => setMounted(true), [])
 
   return (
-    <NextThemesProvider {...props}>
-      <TooltipProvider>
-        <WagmiConfig config={wagmiConfig}>
-          <RainbowKitProvider chains={chains} appInfo={demoAppInfo}>
-            {mounted && children}
-          </RainbowKitProvider>
-        </WagmiConfig>
-      </TooltipProvider>
-    </NextThemesProvider>
-  );
+    <ApolloProvider client={client}>
+      <NextThemesProvider {...props}>
+        <TooltipProvider>
+          <WagmiConfig config={wagmiConfig}>
+            <RainbowKitProvider chains={chains} appInfo={demoAppInfo}>
+              {mounted && children}
+            </RainbowKitProvider>
+          </WagmiConfig>
+        </TooltipProvider>
+      </NextThemesProvider>
+    </ApolloProvider>
+  )
 }

@@ -16,10 +16,11 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { toast } from 'react-hot-toast'
+import { useGetUserLazyQuery } from '@/graphql'
 
 const IS_PREVIEW = process.env.VERCEL_ENV === 'preview'
 export interface ChatProps extends React.ComponentProps<'div'> {
@@ -32,6 +33,9 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
     'ai-token',
     null
   )
+
+  const [getUser, { data: userResponse, called: userCalled }] = useGetUserLazyQuery()
+
   const [previewTokenDialog, setPreviewTokenDialog] = useState(IS_PREVIEW)
   const [previewTokenInput, setPreviewTokenInput] = useState(previewToken ?? '')
   const { messages, append, reload, stop, isLoading, input, setInput } =
@@ -48,6 +52,18 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
         }
       }
     })
+
+  useEffect(() => {
+    if (!userCalled) {
+      getUser({
+        variables: {
+          id: ''
+        }
+      })
+    }
+  }, [userCalled, getUser])
+
+
   return (
     <>
       <div className={cn('pb-[200px] pt-4 md:pt-10', className)}>

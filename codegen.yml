@@ -1,0 +1,19 @@
+overwrite: true
+schema: 'https://v4.subgraph.mumbai.oceanprotocol.com/subgraphs/name/oceanprotocol/ocean-subgraph'
+documents: 'graphql/**/*.graphql'
+generates:
+  schema.graphql:
+    plugins:
+      - 'schema-ast'
+  graphql/index.tsx:
+    plugins:
+      - 'typescript'
+      - 'typescript-operations'
+      - 'typescript-react-apollo'
+    config:
+      scalars:
+        Date: string
+        JSONString: string
+        UUID: string
+      add:
+        content: '/* eslint-disable */'

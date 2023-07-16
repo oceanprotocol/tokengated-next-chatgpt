@@ -1,0 +1,11 @@
+query GetUser(
+  $block: Block_height
+  $id: ID!
+  $subgraphError: _SubgraphErrorPolicy_! = deny
+) {
+  user(block: $block, id: $id, subgraphError: $subgraphError) {
+    id
+    totalOrders
+    totalSales
+  }
+}

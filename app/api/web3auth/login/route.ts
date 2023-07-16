@@ -1,11 +1,11 @@
-import { getServiceSupabase } from '@/supabase/functions/client'
+import { getServiceRoleServerSupabaseClient } from '@/supabase/functions/client'
 import { NextResponse } from 'next/server'
 
 import { signToken } from '@/lib/utils'
 import { ethers } from 'ethers'
 
 export async function POST(req: Request) {
-    const supabase = getServiceSupabase()
+    const srSupabase = getServiceRoleServerSupabaseClient()
     const json = await req.json()
     const { address, signedMessage, nonce } = json
 
@@ -19,7 +19,7 @@ export async function POST(req: Request) {
 
     try {
         // 2. Select * from public.user table to get nonce
-        const { data: user, error: userError } = await supabase
+        const { data: user, error: userError } = await srSupabase
             .from('users')
             .select('*')
             .eq('address', address)
@@ -33,7 +33,7 @@ export async function POST(req: Request) {
 
             let finalAuthUser = null
             // 2. Select * from public.auth_users view where address matches
-            const { data: authUser, error: authUserError } = await supabase
+            const { data: authUser, error: authUserError } = await srSupabase
             .from('auth_users')
             .select('*')
             .eq('raw_user_meta_data->>address', address)
@@ -44,7 +44,7 @@ export async function POST(req: Request) {
 
             if ( !authUser || authUserError ) {
                 // 4. If there's no auth.users.id for that address
-                const { data: newUser, error: newUserError } = await supabase.auth.admin.createUser({
+                const { data: newUser, error: newUserError } = await srSupabase.auth.admin.createUser({
                     email: address + process.env.NEXT_PUBLIC_APP_DOMAN,
                     user_metadata: { address: address },
                     email_confirm: true
@@ -66,7 +66,7 @@ export async function POST(req: Request) {
             console.log("finalAuthUser: ", finalAuthUser)
 
             // 5. Update public.users.id with auth.users.id
-            const { data: updateUser, error: updateUserError } = await supabase
+            const { data: updateUser, error: updateUserError } = await srSupabase
             .from('users')
             .update([
                 { 
@@ -84,16 +84,26 @@ export async function POST(req: Request) {
             console.log("updateUser: ", updateUser)
             console.log("updateUserError: ", updateUserError)
             
-            // 6. Lastly, we sign the token and return it to client
+            // 6. We sign the token and return it to client
             const token = signToken({
                 address: address, 
                 sub: user.id, 
                 aud: 'authenticated'
-            })
-
+            }, { expiresIn: '24h' })
             console.log("token: ", token)
 
-            return NextResponse.json({user: updateUser, token: token}, { status: 200 })
+            // 7. Set password based on token to avoid custom auth/sign-in flows
+            // TODO - Fix this
+            const password = token.slice(0, 36);
+            console.log('password:', password);
+            await srSupabase.auth.updateUser({password: password})
+
+            const response = NextResponse.json(
+                {user: finalAuthUser, token: token}, 
+                {status: 200}
+            )
+            response.cookies.set('web3jwt', token)
+            return response
         }
 
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })

@@ -1,28 +1,3 @@
-## Setup
-1. Add dependencies
-```
-yarn add @rainbow-me/rainbowkit@latest
-```
-
-// 1. [Supabase] Create public.user table
-```
-```
-
-// 1. [Supabase] Create RLS policies in public.users table
-```
-```
-
-// 1. [Supabase] Create RLS policies in auth.users table
-```
-```
-
-// 1. [Supabase-SQL Editor] Create a service_role view of auth.users.
-Why? filter-by-address
-```
-create view public.auth_users as select * from auth.users;
-revoke all on public.auth_users from anon, authenticated;
-```
-
 <a href="https://chat.vercel.ai/">
   <img alt="Next.js 13 and app template Router-ready AI chatbot." src="https://chat.vercel.ai/opengraph-image.png" />
   <h1 align="center">Next.js AI Chatbot</h1>
@@ -101,6 +76,76 @@ pnpm dev
 
 Your app template should now be running on [localhost:3000](http://localhost:3000/).
 
+## Web3Auth Overview
+1. Every time the user needs to login, he'll have to sign a tx.
+1. To sign this tx, the client requests the server /api/web3auth/nonce for a new nonce
+1. A user is created if needed, has the nonce generated, and returns to the client
+1. The client/wallet now must sign the nonce => then send to server to login
+/api/web3auth/login then verifies the msg is signed by the wallet and starts the auth process
+1. Supabase auth.users row is created by the backend, and configured to have the address in the metadata
+1. For the server to read and find the auth.users via the address inside metadata (previous step), it creates an auth_users view inside supabase public schema
+public.users.id is then linked to the auth.users account via id, this enables us to complete the supabase/auth
+
+## Setup Supabase Tables
+There are various steps you have to do right now to bootstrap your supabase project.
+I have tried to list all of them below, please push a PR if you find a problem.
+
+At the end of this you will end up with:
+- A public.users table with 2x RLS policies. All user-related data lives here.
+- A public.auth_users view with strict role-access at the pg-db level.
+- 4x Supabase .env params: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, NEXT_PUBLIC_SUPABASE_SERVICE_KEY, NEXT_PUBLIC_SUPABASE_JWT_SECRET
+- 2x web3auth .env params: NEXT_PUBLIC_WEB3AUTH_MESSAGE, NEXT_PUBLIC_APP_DOMAN
+
+### Security Warning
+
+**[Never use a service key on the client](https://supabase.com/docs/guides/auth/row-level-security#never-use-a-service-key-on-the-client)**
+**Do not expose getServiceSupabase() or NEXT_PUBLIC_SUPABASE_SERVICE_KEY**
+These items are key to implement web3auth on Supabase.
+Please review [Web3Auth Overview](#web3auth-overview) for the intuition.
+
+## SQL Editor - Bootstrap the db
+// 1. Create tables & views
+// 1. Create RLS policies
+```
+TODO - FIX THIS, IT's WRONG
+<!-- -- Create user table used by web3auth
+create table
+  public.users (
+    id // string, links to auth.users,
+    created_at timestamp with time zone null default now(),
+    auth json null,
+    address character varying null, // primary key, has to be initialized with it
+    constraint users_pkey primary key (address) // adjusted manually, fix query
+  ) tablespace pg_default; -->
+
+-- Create view of auth.users and set strict access.
+create view public.auth_users as select * from auth.users;
+revoke all on public.auth_users from anon, authenticated;
+
+-- TODO - See what can be removed
+-- service-role policy
+CREATE POLICY service_role_access ON public.users
+AS PERMISSIVE FOR ALL
+TO service_role
+USING (auth.role() = 'service_role')
+WITH CHECK (auth.role() = 'service_role');
+
+-- github auth policy
+CREATE POLICY authenticated_users_can_write ON public.users
+AS PERMISSIVE FOR UPDATE
+TO authenticated
+USING (auth.role() = 'authenticated')
+WITH CHECK (auth.role() = 'authenticated');
+
+-- web3 auth policy
+-- **Please replace 'request.jwt.claims'
+CREATE POLICY web3_auth ON public.users
+AS PERMISSIVE FOR UPDATE
+TO authenticated
+USING ((current_setting('request.jwt.claims', true))::json ->> 'address' = address)
+WITH CHECK ((current_setting('request.jwt.claims', true))::json ->> 'address' = address);
+```
+
 ## Authors
 
 This library is created by [Vercel](https://vercel.com) and [Next.js](https://nextjs.org) team members, with contributions from:
@@ -109,3 +154,7 @@ This library is created by [Vercel](https://vercel.com) and [Next.js](https://ne
 - Shu Ding ([@shuding\_](https://twitter.com/shuding_)) - [Vercel](https://vercel.com)
 - shadcn ([@shadcn](https://twitter.com/shadcn)) - [Contractor](https://shadcn.com)
 - Thor Schaeff ([@thorwebdev](https://twitter.com/thorwebdev)) - [Supabaseifier](https://thor.bio)
+
+## Ocean Protocol
+
+This scaffolding is extended by Ocean Protocol ([@oceanprotocol](https://twitter.com/oceanprotocol)) to provide web3auth, token-gated access, and a base stack to build AI dApps.

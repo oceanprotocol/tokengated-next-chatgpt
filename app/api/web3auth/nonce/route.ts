@@ -1,9 +1,9 @@
-import { getServiceSupabase } from '@/supabase/functions/client'
+import { getServiceRoleServerSupabaseClient } from '@/supabase/functions/client'
 import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
 
 export async function POST(req: Request) {
-  const supabase = getServiceSupabase()
+  const srSupabase = getServiceRoleServerSupabaseClient()
   const json = await req.json()
   const { address } = json
   const userId = (await auth())?.user.id
@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     console.log("::::::::: nonce check")
     console.log("::::::::: address:", address)
 
-    let { data, error } = await supabase
+    let { data, error } = await srSupabase
     .from('users')
     .select('*')
     .eq('address', address)
@@ -26,7 +26,7 @@ export async function POST(req: Request) {
     console.log("::::::::: existing user:", data)
 
     if (!data || error) {
-      const { data: user, error: upsertError } = await supabase
+      const { data: user, error: upsertError } = await srSupabase
       .from('users')
       .upsert([
         { 
@@ -47,7 +47,7 @@ export async function POST(req: Request) {
       }
       throw new Error("Failed to create user")
     } else {
-      const { data: user, error: updateError } = await supabase
+      const { data: user, error: updateError } = await srSupabase
       .from('users')
       .update([
         { 

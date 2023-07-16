@@ -7,7 +7,9 @@ import { cn } from '@/lib/utils'
 import { Button, type ButtonProps } from '@/components/ui/button'
 import { IconMetamask, IconSpinner } from '@/components/ui/icons'
 
-import { ethers } from "ethers";
+import { useRouter } from 'next/navigation';
+import { auth } from '@/auth'
+
 import { 
   useAccount, 
   useNetwork
@@ -27,9 +29,8 @@ export function LoginButtonMetamask({
   ...props
 }: LoginButtonProps) {
   const [isLoading, setIsLoading] = React.useState(false)
-  // Create a Supabase client configured to use cookies
-  const supabase = createClientComponentClient()
 
+  const supabase = createClientComponentClient()
   const { address, isConnected } = useAccount();
   // const { chains } = useNetwork();
   
@@ -38,7 +39,8 @@ export function LoginButtonMetamask({
       variant="outline"
       onClick={async () => {
         setIsLoading(true)
-      
+        const userAddress = address ? address : '';
+
         try {
           // 1. Get a nonce from the server
           const nonceResponse = await fetch(`/api/web3auth/nonce`, {
@@ -47,7 +49,7 @@ export function LoginButtonMetamask({
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              address: address,
+              address: userAddress,
             }),
           });
 
@@ -70,19 +72,31 @@ export function LoginButtonMetamask({
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              address: address,
+              address: userAddress,
               signedMessage: signedMessage,
               nonce: user.auth.genNonce
             })
           })
       
-          const data = await response.json()
-          console.log('web3auth login data:', data)
-          
           // Handle the response from the API
           if (response.ok) {
             // The verification was successful
-            console.log('Verification successful!');
+            const data = await response.json()
+            console.log('Verification successful!', data)
+            
+            // TODO - Do not do this. This is a security risk.
+            // Auth needs to work w/ supabase & jwt
+            // setAuth does not work anymore => https://medium.com/@gracew/using-supabase-rls-with-a-custom-auth-provider-b31564172d5d
+            const password = data.token.slice(0, 36)
+            console.log('password:', password)
+            console.log('email:', userAddress + process.env.NEXT_PUBLIC_APP_DOMAN)
+            const session = await supabase.auth.signInWithPassword({
+              email: userAddress + process.env.NEXT_PUBLIC_APP_DOMAN,
+              password: password
+            })
+
+            console.log('session:', session)
+
           } else {
             // The verification failed
             console.error('Verification failed!');

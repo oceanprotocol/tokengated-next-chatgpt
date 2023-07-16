@@ -2,6 +2,7 @@ import { clsx, type ClassValue } from 'clsx'
 import { customAlphabet } from 'nanoid'
 import { twMerge } from 'tailwind-merge'
 
+import { NextRequest, NextResponse } from 'next/server'
 import jwt from 'jsonwebtoken'
 
 export function cn(...inputs: ClassValue[]) {
@@ -44,11 +45,38 @@ export function formatDate(input: string | number | Date): string {
   })
 }
 
-export function signToken(payload: any) {
-  const jwt_secret = process.env.NEXT_PUBLIC_JWT_SECRET;
-  if (!jwt_secret) {
-    throw new Error('JWT_SECRET environment variable is required');
+export function signToken(payload: any, options: any) {
+  return jwt.sign(
+    payload, 
+    process.env.NEXT_PUBLIC_SUPABASE_JWT_SECRET, 
+    options
+  );
+}
+
+export function verifyToken(request: NextRequest) {
+  try {
+    const token = request.cookies.get('web3jwt')?.value
+
+    if (!token) {
+      throw new Error('An unexpected error occurred')
+    }
+
+    const decoded = jwt.verify(token, process.env.NEXT_PUBLIC_SUPABASE_JWT_SECRET);
+    // Integrate token w/ auth
+    // return decoded;
+    return token;
+  } catch (err) {
+    return false;
   }
-  
-  return jwt.sign(payload, jwt_secret);
+}
+
+export function jsonResponse(status: number, data: any, init?: ResponseInit) {
+  return new Response(JSON.stringify(data), {
+    ...init,
+    status,
+    headers: {
+      ...init?.headers,
+      'Content-Type': 'application/json',
+    },
+  })
 }

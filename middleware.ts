@@ -7,10 +7,25 @@ export async function middleware(req: NextRequest) {
   const res = NextResponse.next()
 
   // Create a Supabase client configured to use cookies
-  const supabase = createMiddlewareClient({ req, res })
+  let supabase = createMiddlewareClient({ req, res })
+
+  // TODO - sign in via user w/ jwt to provide a session
+  // Official Implementation: https://github.com/orgs/supabase/discussions/1849
+  // 1. get jwt
+  // 2. check if jwt is valid
+  // 3. if !session but jwt is valid, create session
+  // const web3jwt = req.cookies.get('web3jwt')
+  // if (!session && web3jwt) {
+  //  // TODO - this is not working
+  //  const headers = { Authorization: `Bearer ${web3jwt}` }
+  //  supabase = createMiddlewareClient({ req, res }, "KEY", { headers })
+  //   supabase = createMiddlewareClient({ req, res }, 
+  //     options: { headers: { name: "Authorization", : `Bearer ${web3jwt}` } 
+  //   })
+  // update session
+  // }
 
   // Refresh session if expired - required for Server Components
-  // https://supabase.com/docs/guides/auth/auth-helpers/nextjs#managing-session-with-middleware
   const {
     data: { session }
   } = await supabase.auth.getSession()
@@ -40,3 +55,17 @@ export const config = {
     '/((?!share|api|_next/static|_next/image|favicon.ico).*)'
   ]
 }
+
+
+// from vercel/jwt-auth
+// export async function middleware(req: NextRequest) {
+//   const url = req.nextUrl
+
+//   if (url.searchParams.has('edge')) {
+//     const resOrPayload = await verifyAuth(req)
+
+//     return resOrPayload instanceof Response
+//       ? resOrPayload
+//       : jsonResponse(200, { nanoid: nanoid(), jwtID: resOrPayload.jti })
+//   }
+// }

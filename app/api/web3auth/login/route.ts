@@ -94,7 +94,7 @@ export async function POST(req: Request) {
 
             // 7. Set password based on token to avoid custom auth/sign-in flows
             // TODO - Fix this
-            const password = token.slice(0, 36);
+            const password = token.slice(0, 12);
             console.log('password:', password);
             await srSupabase.auth.updateUser({password: password})
 

@@ -87,7 +87,7 @@ export function LoginButtonMetamask({
             // TODO - Do not do this. This is a security risk.
             // Auth needs to work w/ supabase & jwt
             // setAuth does not work anymore => https://medium.com/@gracew/using-supabase-rls-with-a-custom-auth-provider-b31564172d5d
-            const password = data.token.slice(0, 36)
+            const password = data.token.slice(0, 12)
             console.log('password:', password)
             console.log('email:', userAddress + process.env.NEXT_PUBLIC_APP_DOMAN)
             const session = await supabase.auth.signInWithPassword({

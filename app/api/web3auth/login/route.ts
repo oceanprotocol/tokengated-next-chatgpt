@@ -131,10 +131,11 @@ const getTTLofUser = async (address: string) => {
   })
 
   if (userOnChain?.user?.id) {
+    const datatoken = process.env.NEXT_PUBLIC_DATATOKEN_ADDRESS?.toLowerCase() || ''
     const orders = await subgraphSDK.GetOrders({
       where: {
         consumer: userOnChain.user.id,
-        datatoken: process.env.NEXT_PUBLIC_DATATOKEN_ADDRESS || ''
+        datatoken: datatoken
       },
       orderBy: Order_OrderBy.CreatedTimestamp,
       orderDirection: OrderDirection.Desc

@@ -60,6 +60,11 @@ What does this mean?
 
 **[Never use a service key on the client](https://supabase.com/docs/guides/auth/row-level-security#never-use-a-service-key-on-the-client)**
 
+## Supabase Web3Auth
+In order to have the user login to our app and only see his own data, we need to manage Authentication, and make sure the user can only access their own rows.
+
+To establish this in Supabase, we needed something custom because of how we sign in the user via a Web3 wallet transaction. Supabase custom auth does not provide you with a session, instead it is up to us to validate the JWT and the user.
+
 ## Deploy Your Own
 
 Deploying this app with a 1-click results in you having to take more steps. Instead, we provided all of them here for you.
@@ -72,9 +77,9 @@ Deploying this app with a 1-click results in you having to take more steps. Inst
 
 ## Running locally
 
-You will need to use the environment variables [defined in `.env.example`](.env.example) to run Next.js AI Chatbot. It's recommended you use [Vercel Environment Variables](https://vercel.com/docs/concepts/projects/environment-variables) for this, but a `.env` file is all that is necessary.
+**Before you start,** make sure you have followed every step from [Deploy Your Own](#deploy-your-own) so your application can be configured correctly.
 
-> Note: You should not commit your `.env` file or it will expose secrets that will allow others to control access to your various OpenAI and authentication provider accounts.
+You will need to use the environment variables [defined in `.env.example`](.env.example) to run OP's Tokengated AI Chatbot.
 
 Copy the `.env.example` file and populate the required env vars:
 
@@ -97,11 +102,6 @@ pnpm dev
 ```
 
 Your app template should now be running on [localhost:3000](http://localhost:3000/).
-
-## Supabase Web3Auth
-In order to have the user login to our app and only see his own data, we need to manage Authentication, and make sure the user can only access their own rows.
-
-To establish this in Supabase, we needed something custom because of how we sign in the user via a Web3 wallet transaction. Supabase custom auth does not provide you with a session, instead it is up to us to validate the JWT and the user.
 
 ## Authors
 

@@ -75,7 +75,7 @@ export async function POST(req: Request) {
             .select()
 
             // 6. We sign the token and return it to client
-            const token = signToken({
+            const token = await signToken({
                 address: address, 
                 sub: user.id, 
                 aud: 'authenticated'

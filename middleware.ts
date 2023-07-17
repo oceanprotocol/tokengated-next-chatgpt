@@ -7,9 +7,10 @@ export async function middleware(req: NextRequest) {
 
   const address = req.cookies.get('address')?.value || ''
   const web3jwt = req.cookies.get('web3jwt')?.value || ''
-  
+  const validToken = verifyToken(web3jwt, address)
+
   // would be good to maybe verify web3jwt here, but error w/ edge functions
-  if( !web3jwt ) {
+  if( !web3jwt || !validToken ) {
     if( !req.url.includes('/sign-in') ) {
       const redirectUrl = req.nextUrl.clone()
       redirectUrl.pathname = '/sign-in'

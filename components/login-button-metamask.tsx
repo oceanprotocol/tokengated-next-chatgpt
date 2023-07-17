@@ -43,8 +43,9 @@ export function LoginButtonMetamask({
       variant="outline"
       onClick={async () => {
         setIsLoading(true)
+        const userAddress = address ? address : ''
         
-        if(address && isConnected) {
+        if(userAddress && isConnected) {
           try {
             // 1. Get a nonce from the server
             const nonceResponse = await fetch(`/api/web3auth/nonce`, {
@@ -53,7 +54,7 @@ export function LoginButtonMetamask({
                 'Content-Type': 'application/json'
               },
               body: JSON.stringify({
-                address: address,
+                address: userAddress,
               }),
             });
 
@@ -72,7 +73,7 @@ export function LoginButtonMetamask({
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                address: address,
+                address: userAddress,
                 signedMessage: signedMessage,
                 nonce: user.auth.genNonce
               })

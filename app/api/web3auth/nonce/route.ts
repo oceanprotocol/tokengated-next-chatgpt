@@ -6,7 +6,7 @@ export async function POST(req: Request) {
   const srSupabase = getServiceRoleServerSupabaseClient()
   const json = await req.json()
   const { address } = json
-  const userId = (await auth())?.user.id
+  const userId = (await auth())?.id
 
   if (userId) {
     return new Response('Unauthorized', {status: 401})

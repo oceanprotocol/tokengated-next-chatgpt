@@ -1,0 +1,49 @@
+query GetOrder(
+  $block: Block_height
+  $id: ID!
+  $subgraphError: _SubgraphErrorPolicy_! = deny
+) {
+  order(block: $block, id: $id, subgraphError: $subgraphError) {
+    id
+    eventIndex
+    datatoken {
+      id
+    }
+    consumer {
+      id
+    }
+    payer {
+      id
+    }
+    amount
+    serviceIndex
+    nftOwner {
+      id
+    }
+    publishingMarket {
+      id
+    }
+    publishingMarketToken {
+      id
+    }
+    providerFee
+    providerFeeValidUntil
+    consumerMarket {
+      id
+    }
+    consumerMarketToken {
+      id
+    }
+    createdTimestamp
+    tx
+    eventIndex
+    block
+    lastPriceToken {
+      id
+    }
+    lastPriceValue
+    estimatedUSDValue
+    gasUsed
+    gasPrice
+  }
+}

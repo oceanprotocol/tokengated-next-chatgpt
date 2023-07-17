@@ -1,0 +1,27 @@
+query GetOrders(
+  $block: Block_height
+  $first: Int = 100
+  $orderBy: Order_orderBy
+  $orderDirection: OrderDirection
+  $skip: Int = 0
+  $subgraphError: _SubgraphErrorPolicy_! = deny
+  $where: Order_filter
+) {
+  orders(
+    block: $block
+    first: $first
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+    skip: $skip
+    subgraphError: $subgraphError
+    where: $where
+  ) {
+    id
+    block
+    consumer {
+      id
+    }
+    amount
+    createdTimestamp
+  }
+}

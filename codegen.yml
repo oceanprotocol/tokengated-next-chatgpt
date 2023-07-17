@@ -1,0 +1,15 @@
+overwrite: true
+schema: 'https://v4.subgraph.mumbai.oceanprotocol.com/subgraphs/name/oceanprotocol/ocean-subgraph'
+documents: 'graphql/operations/**/*.graphql'
+generates:
+  graphql/schema.graphql:
+    plugins:
+      - 'schema-ast'
+  graphql/sdk.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-graphql-request
+    config:
+      add:
+        content: '/* eslint-disable */'

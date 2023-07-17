@@ -1,27 +1,22 @@
-import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
 import { NextResponse } from 'next/server'
-
 import type { NextRequest } from 'next/server'
+import { verifyToken } from '@/lib/utils'
 
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next()
 
-  // Create a Supabase client configured to use cookies
-  const supabase = createMiddlewareClient({ req, res })
+  const address = req.cookies.get('address')?.value || ''
+  const web3jwt = req.cookies.get('web3jwt')?.value || ''
+  const validToken = verifyToken(web3jwt, address)
 
-  // Refresh session if expired - required for Server Components
-  // https://supabase.com/docs/guides/auth/auth-helpers/nextjs#managing-session-with-middleware
-  const {
-    data: { session }
-  } = await supabase.auth.getSession()
-
-  // OPTIONAL: this forces users to be logged in to use the chatbot.
-  // If you want to allow anonymous users, simply remove the check below.
-  if (!session && !req.url.includes('/sign-in')) {
-    const redirectUrl = req.nextUrl.clone()
-    redirectUrl.pathname = '/sign-in'
-    redirectUrl.searchParams.set(`redirectedFrom`, req.nextUrl.pathname)
-    return NextResponse.redirect(redirectUrl)
+  // would be good to maybe verify web3jwt here, but error w/ edge functions
+  if( !web3jwt || !validToken ) {
+    if( !req.url.includes('/sign-in') ) {
+      const redirectUrl = req.nextUrl.clone()
+      redirectUrl.pathname = '/sign-in'
+      redirectUrl.searchParams.set(`redirectedFrom`, req.nextUrl.pathname)
+      return NextResponse.redirect(redirectUrl)
+    }
   }
 
   return res

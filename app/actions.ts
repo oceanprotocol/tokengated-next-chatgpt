@@ -54,11 +54,11 @@ export async function removeChat({ id, path }: { id: string; path: string }) {
 
 export async function clearChats() {
   try {
-    const session = await auth()
+    const user = await auth()
     await supabase
       .from('chats')
       .delete()
-      .eq('user_id', session?.user.id)
+      .eq('user_id', user?.id)
       .throwOnError()
     revalidatePath('/')
     return redirect('/')

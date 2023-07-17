@@ -2,6 +2,8 @@ import { clsx, type ClassValue } from 'clsx'
 import { customAlphabet } from 'nanoid'
 import { twMerge } from 'tailwind-merge'
 
+import { SignJWT, jwtVerify } from 'jose';
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
@@ -39,5 +41,44 @@ export function formatDate(input: string | number | Date): string {
     month: 'long',
     day: 'numeric',
     year: 'numeric'
+  })
+}
+
+interface UserJwtPayload {
+  jti: string
+  iat: number
+}
+
+export async function signToken(payload: any, options: any) {
+  const token = await new SignJWT(payload)
+  .setProtectedHeader({ alg: 'HS256' })
+  .setJti(nanoid())
+  .setIssuedAt()
+  .setExpirationTime('2h')
+  .sign(new TextEncoder().encode(process.env.NEXT_PUBLIC_SUPABASE_JWT_SECRET))
+
+  return token
+}
+
+export async function verifyToken(token: string, address: string) {
+  try {
+    const verified = await jwtVerify(
+      token,
+      new TextEncoder().encode(process.env.NEXT_PUBLIC_SUPABASE_JWT_SECRET)
+    )
+    return verified.payload as UserJwtPayload
+  } catch (err) {
+    return jsonResponse(401, { error: { message: 'Your token has expired.' } })
+  }
+}
+
+export function jsonResponse(status: number, data: any, init?: ResponseInit) {
+  return new Response(JSON.stringify(data), {
+    ...init,
+    status,
+    headers: {
+      ...init?.headers,
+      'Content-Type': 'application/json',
+    },
   })
 }

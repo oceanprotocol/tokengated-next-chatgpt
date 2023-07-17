@@ -19,7 +19,8 @@ export async function POST(req: Request) {
   const supabase = createRouteHandlerClient<Database>({ cookies })
   const json = await req.json()
   const { messages, previewToken } = json
-  const userId = (await auth())?.user.id
+  const user = await auth()
+  const userId = user?.id
 
   if (!userId) {
     return new Response('Unauthorized', {

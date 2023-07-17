@@ -2,7 +2,6 @@ import { clsx, type ClassValue } from 'clsx'
 import { customAlphabet } from 'nanoid'
 import { twMerge } from 'tailwind-merge'
 
-import { NextRequest, NextResponse } from 'next/server'
 import jwt from 'jsonwebtoken'
 
 export function cn(...inputs: ClassValue[]) {
@@ -53,15 +52,12 @@ export function signToken(payload: any, options: any) {
   );
 }
 
-export function verifyToken(request: NextRequest) {
+export function verifyToken(token: string, address: string) {
   try {
-    const token = request.cookies.get('web3jwt')?.value
-
-    if (!token) {
-      throw new Error('An unexpected error occurred')
-    }
-
     const decoded = jwt.verify(token, process.env.NEXT_PUBLIC_SUPABASE_JWT_SECRET);
+    console.log("decoded:", decoded)
+    console.log("address:", address)
+    
     return decoded;
   } catch (err) {
     return err;

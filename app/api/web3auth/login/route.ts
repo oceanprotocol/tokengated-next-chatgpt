@@ -86,6 +86,7 @@ export async function POST(req: Request) {
                 'success', 
                 {status: 200}
             )
+            response.cookies.set('address', address)
             response.cookies.set('web3jwt', token)
             return response
         }

@@ -1,10 +1,10 @@
 <a href="https://chat.vercel.ai/">
-  <img alt="Next.js 13 and app template Router-ready AI chatbot." src="https://chat.vercel.ai/opengraph-image.png" />
-  <h1 align="center">Ocean Protocol Tokengated AI Chatbot</h1>
+  <img src="docs/assets/tokengated_chatbot.png"/>
+  <h1 align="center">Ocean Protocol Tokengated Chatbot</h1>
 </a>
 
 <p align="center">
-  A Web3 powered, Ocean Protocol tokengated, open-source AI chatbot app template built with Next.js, the Vercel AI SDK, OpenAI, Postgres DB, and Supabase.
+  A Web3 powered, Ocean Protocol tokengated, open-source AI chatbot app template built with Next.js, the Vercel AI SDK, OpenAI, and Supabase.
 </p>
 
 <p align="center">
@@ -62,9 +62,14 @@ What does this mean?
 Before hopping into code, let's launch the app and play with it.
 1. Get a new [OpenAI API key](https://platform.openai.com/apps)
 1. Deploy a new [DB in Supabase](https://supabase.com/dashboard/sign-in)
+1. Setup your `public.user` table inside Supabase. We have provided you a screenshot of what ours looks like so you can configure it in the exact same way. <figure><img src="docs/assets/supabase_user_table.png" alt="Create a public.user table" width="640"/></figure>
+1. Setup your Supabase Role Level Security (RLS) by executing the scripts located here `supabase/seed.sml` inside the Supabase SQL Editor.
 1. Get an [infura API key](https://www.infura.io/)
 1. Fork this repository: [tokengated-next-chatgpt](https://github.com/oceanprotocol/tokengated-next-chatgpt/) via Github, then hop onto Vercel and [Deploy it as a new repository](https://vercel.com/new/).
-1. You should now have all the ENV_VARS needed to configure the initial app.
+1. Configure your Vercel->project->settings to rebuild the sdk.ts build by overriding the build command with: `yarn generate && yarn build`
+1. You should now have all the initial ENV_VARS required to deploy the initial version of the app.
+1. Finally, after Vercel is deployed, update your Supabase's Project: [Authentication / URL Configuration / Site URL](https://supabase.com/dashboard/project/) to be your Vercel's app URL.
+
 ```
 OPENAI_API_KEY=your-open-ai-key
 NEXT_PUBLIC_SUPABASE_URL=your-supabase-project-url
@@ -76,12 +81,43 @@ NEXT_PUBLIC_INFURA_API_KEY=your-infura-api-key
 NEXT_PUBLIC_WEB3AUTH_MESSAGE="Please sign this message to confirm your identity. Nonce:"
 NEXT_PUBLIC_APP_DOMAN="@yourdomain.com"
 ```
-1. Before you test, make sure to override your build command with: `yarn generate && yarn build` so Vercel rebuilds the sdk.ts
-1. After Vercel is deployed, update your Supabase's Project: [Authentication / URL Configuration / Site URL](https://supabase.com/dashboard/project/) to be your Vercel's app URL.
+_Initial Environment Variables required for Vercel app to work_
+
+## Configure Supabase
+In the SQL Editor, we're going to create the remainder of the role-level security policies we'll need to keep the DB secure.
+
+You should already have a `public.users` table from the work you did in [Deploy Vercel App](#deploy-vercel-app)
+
+```
+-- Create view of auth.users and set strict access.
+create view public.auth_users as select * from auth.users;
+revoke all on public.auth_users from anon, authenticated;
+
+-- service-role policy
+CREATE POLICY service_role_access ON public.users
+AS PERMISSIVE FOR ALL
+TO service_role
+USING (auth.role() = 'service_role')
+WITH CHECK (auth.role() = 'service_role');
+
+-- authenticated user policy
+CREATE POLICY authenticated_users_can_write ON public.users
+AS PERMISSIVE FOR UPDATE
+TO authenticated
+USING (auth.role() = 'authenticated')
+WITH CHECK (auth.role() = 'authenticated');
+
+-- web3 auth policy
+CREATE POLICY web3_auth ON public.users
+AS PERMISSIVE FOR UPDATE
+TO authenticated
+USING ((current_setting('request.jwt.claims', true))::json ->> 'address' = address)
+WITH CHECK ((current_setting('request.jwt.claims', true))::json ->> 'address' = address);
+```
 
 ## Publish Datatoken
-We recommend using the [Alchemy Mumbai Testnet](https://www.alchemy.com/overviews/mumbai-testnet) to deploy your datatoken. It will be fast and free.
-1. Let's begin by adding the Mumbai network to your wallet. 
+
+We recommend using the [Alchemy Mumbai Testnet](https://www.alchemy.com/overviews/mumbai-testnet) to deploy your datatoken. It will be fast and free.  
 ```
 Network Name: Mumbai Testnet
 New RPC URL: https://polygon-mumbai.g.alchemy.com/v2/your-api-key
@@ -89,21 +125,28 @@ Chain ID: 80001
 Currency Symbol: MATIC
 Block Explorer URL: https://mumbai.polygonscan.com/
 ```
-1. Now connect your wallet to the Mumbai network.
+_The Mumbai network_  
+
+1. Let's begin by adding the Mumbai network to your wallet. 
+1. Now connect your wallet to the Mumbai network. <figure><img src="docs/assets/metamask_add_network.png" alt="Metamask Add Network" width="480"/></figure>
 1. Now get your wallet `0x address` for later.
 1. We need some tokens to make transactions, [collect MATIC from this faucet](https://mumbaifaucet.com/) so we can create the Data token.
 1. Make sure to also [collect OCEAN from this faucet](https://faucet.mumbai.oceanprotocol.com/) so you can also buy some tokens.
-1. Deploy a Datatoken (DT) inside the [OCEAN marketplace](https://market.oceanprotocol.com/). On Step-2, select File-type "URL" and use the Vercel url as the address so you can complete the wizard (this architecture doesn't use it). You can now see your datatoken, copy the `0x address`.
+1. Deploy a Datatoken (DT) inside the [OCEAN marketplace](https://market.oceanprotocol.com/). On Step-2, select File-type "URL" and use the Vercel url as the address so you can complete the wizard (this architecture doesn't use it). You can now see your datatoken, copy the `0x address`. <figure><img src="docs/assets/ocean_publish_datatoken.png" alt="Publish your URL Datatoken" width="640"/></figure>
+1. You have now published a Datatoken. When a user purchases this, they will gain access to our application. So, let's make sure to buy one so we can obtain access to the app after we deploy it.
+<figure><img src="docs/assets/your_datatoken.png" alt="Your Datatoken" width="640"/></figure>
 
 ### Complete Vercel Configuration
+
 You can now complete configuring the Vercel app.
 
 Go back to your Vercel->project->settings->Environment Variables and add the rest of them.
 ```
-NEXT_PUBLIC_WEB3AUTH_TTL = 86400
+NEXT_PUBLIC_WEB3AUTH_TTL = 3600
 NEXT_PUBLIC_DATATOKEN_ADDRESS = 0x2eaa179769d1Db4678Ce5FCD93E29F81aD0C5146
 NEXT_PUBLIC_SUBGRAPH_URL = "https://v4.subgraph.mumbai.oceanprotocol.com/subgraphs/name/oceanprotocol/ocean-subgraph"
 ```
+_Ocean Protocol and Datatoken Environment Variables_
 
 User subscriptions are verified at login based on when the Datatoken was purchased + TTL. Users are only authorized to prompt until the subscription expires.
 
@@ -134,6 +177,20 @@ pnpm dev
 ```
 
 Your app template should now be running on [localhost:3000](http://localhost:3000/).
+
+### Building GQL SDK
+
+Vercel currently does not support `graphql-generate` as part of the build, so you'll have to do this ahead of time.
+
+As you write more GQL, please run the `yarn generate` command to update your local GQL library and SDK. This will help you maintain good code and avoid type safety issues.
+
+You can then add the newly built SDK before deploying a new Vercel Build.
+```
+yarn generate
+git add .
+git commit -m "updating gql"
+git push
+```
 
 ## Authors
 

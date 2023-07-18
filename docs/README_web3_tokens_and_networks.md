@@ -45,7 +45,8 @@ Follow these steps
 1. Decide on the network you're going to want to use. If you choose Ethereum Mainnet, aka `mainnet`, you should use it for the remainder of this tutorial.
 1. Change the `NEXT_PUBLIC_SUBGRAPH_URL` inside of your .env file to one of our other subgraphs (below)
 1. Update `codegen.yml` with the same subgraph url that you used in the previous step.
-1. Finally, update your local or vercel environment (**next section**).
+1. Finally, after configuring the app to be on the network of your choice, make sure the project is [rebuilt correctly via Local or Vercel](#deploy-build).
+
 
 Subgraph Endpoints
 ```
@@ -104,8 +105,6 @@ print(exchange.details) # you need the exchange details (url)
 ```
 
 ## Deploy Build 
-
-Finally, after configuring the app to be on the network of your choice, make sure the project is rebuilt in the correct environment.
 
 ### Update Local
 

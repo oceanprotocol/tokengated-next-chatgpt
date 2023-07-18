@@ -1,6 +1,6 @@
-# Ocean Protocol Tokengated ChatGPT
+# Improvements and Ideas
 
-## Improve this product
+## Improve this project
 1. Make it easier to configure web3: ocean datatoken, multiple networks, subgraph
 1. Tighten web3auth: clean it, make it more secure, improve handling cookie/supabase/ocean datatoken TTL
 1. Improve bootstrap by reducing the number of APIs/SDKs: Wallet Connect, Infura, others?

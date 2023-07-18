@@ -60,13 +60,14 @@ What does this mean?
 ## Deploy Vercel App
 
 Before hopping into code, let's launch the app and play with it.
+1. Fork this repository: [tokengated-next-chatgpt](https://github.com/oceanprotocol/tokengated-next-chatgpt/) via Github.
 1. Get a new [OpenAI API key](https://platform.openai.com/apps)
 1. Deploy a new [DB in Supabase](https://supabase.com/dashboard/sign-in)
-1. Setup your `public.user` table inside Supabase. We have provided you a screenshot of what ours looks like so you can configure it in the exact same way. <figure><img src="docs/assets/supabase_user_table.png" alt="Create a public.user table" width="640"/></figure>
-1. Setup your Supabase Role Level Security (RLS) by executing the scripts located here `supabase/seed.sml` inside the Supabase SQL Editor.
+1. Setup your `public.users` table inside Supabase. We have provided you a screenshot of what ours looks like so you can configure it in the exact same way. <figure><img src="docs/assets/supabase_user_table.png" alt="Create a public.users table" width="640"/></figure> Please note that your `public.users.id` should link to your `auth.users.id` record <figure><img src="docs/assets/table_users_linked_id.png" alt="Link your public.users.id to auth.users.id" width="640"/></figure>
+1. Setup your Supabase Role Level Security (RLS) by executing the [scripts located below](#configure-supabase) inside the Supabase SQL Editor.
 1. Get an [infura API key](https://www.infura.io/)
-1. Fork this repository: [tokengated-next-chatgpt](https://github.com/oceanprotocol/tokengated-next-chatgpt/) via Github, then hop onto Vercel and [Deploy it as a new repository](https://vercel.com/new/).
-1. Configure your Vercel->project->settings to rebuild the sdk.ts build by overriding the build command with: `yarn generate && yarn build`
+1. Hop onto Vercel and [Deploy your forked repository](https://vercel.com/new/) as a new Vercel project and configure your environment variables.
+1. Configure your Vercel->project->settings to rebuild `sdk.ts` by overriding the build command with: `yarn generate && yarn build`
 1. You should now have all the initial ENV_VARS required to deploy the initial version of the app.
 1. Finally, after Vercel is deployed, update your Supabase's Project: [Authentication / URL Configuration / Site URL](https://supabase.com/dashboard/project/) to be your Vercel's app URL.
 
@@ -78,8 +79,8 @@ NEXT_PUBLIC_SUPABASE_SERVICE_KEY=your-supabase-service-key
 NEXT_PUBLIC_SUPABASE_JWT_SECRET=your-supabase-jwt-key
 NEXT_PUBLIC_WC2_PROJECT_ID=your-wallet-connect-project-id
 NEXT_PUBLIC_INFURA_API_KEY=your-infura-api-key
-NEXT_PUBLIC_WEB3AUTH_MESSAGE="Please sign this message to confirm your identity. Nonce:"
-NEXT_PUBLIC_APP_DOMAN="@yourdomain.com"
+NEXT_PUBLIC_WEB3AUTH_MESSAGE=Please sign this message to confirm your identity. Nonce:
+NEXT_PUBLIC_APP_DOMAN=@yourdomain.com
 ```
 _Initial Environment Variables required for Vercel app to work_
 

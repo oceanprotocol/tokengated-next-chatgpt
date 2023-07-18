@@ -1,5 +1,5 @@
 <a href="https://chat.vercel.ai/">
-  <img src="assets/README/tokengated_chatbot.png"/>
+  <img src="docs/assets/tokengated_chatbot.png"/>
   <h1 align="center">Ocean Protocol Tokengated Chatbot</h1>
 </a>
 
@@ -62,7 +62,7 @@ What does this mean?
 Before hopping into code, let's launch the app and play with it.
 1. Get a new [OpenAI API key](https://platform.openai.com/apps)
 1. Deploy a new [DB in Supabase](https://supabase.com/dashboard/sign-in)
-1. Setup your public.user table inside Supabase. We have provided you a screenshot of what ours looks like so you can configure it in the exact same way. <figure><img src="assets/README/supabase_user_table.png" alt="Create a public.user table" width="640"/></figure>
+1. Setup your public.user table inside Supabase. We have provided you a screenshot of what ours looks like so you can configure it in the exact same way. <figure><img src="docs/assets/supabase_user_table.png" alt="Create a public.user table" width="640"/></figure>
 1. Setup your Supabase Role Level Security (RLS) by executing the scripts located here `supabase/seed.sml` inside the Supabase SQL Editor.
 1. Get an [infura API key](https://www.infura.io/)
 1. Fork this repository: [tokengated-next-chatgpt](https://github.com/oceanprotocol/tokengated-next-chatgpt/) via Github, then hop onto Vercel and [Deploy it as a new repository](https://vercel.com/new/).
@@ -96,13 +96,13 @@ Block Explorer URL: https://mumbai.polygonscan.com/
 _The Mumbai network_  
 
 1. Let's begin by adding the Mumbai network to your wallet. 
-1. Now connect your wallet to the Mumbai network. <figure><img src="assets/README/metamask_add_network.png" alt="Metamask Add Network" width="480"/></figure>
+1. Now connect your wallet to the Mumbai network. <figure><img src="docs/assets/metamask_add_network.png" alt="Metamask Add Network" width="480"/></figure>
 1. Now get your wallet `0x address` for later.
 1. We need some tokens to make transactions, [collect MATIC from this faucet](https://mumbaifaucet.com/) so we can create the Data token.
 1. Make sure to also [collect OCEAN from this faucet](https://faucet.mumbai.oceanprotocol.com/) so you can also buy some tokens.
-1. Deploy a Datatoken (DT) inside the [OCEAN marketplace](https://market.oceanprotocol.com/). On Step-2, select File-type "URL" and use the Vercel url as the address so you can complete the wizard (this architecture doesn't use it). You can now see your datatoken, copy the `0x address`. <figure><img src="assets/README/ocean_publish_datatoken.png" alt="Publish your URL Datatoken" width="640"/></figure>
+1. Deploy a Datatoken (DT) inside the [OCEAN marketplace](https://market.oceanprotocol.com/). On Step-2, select File-type "URL" and use the Vercel url as the address so you can complete the wizard (this architecture doesn't use it). You can now see your datatoken, copy the `0x address`. <figure><img src="docs/assets/ocean_publish_datatoken.png" alt="Publish your URL Datatoken" width="640"/></figure>
 1. You have now published a Datatoken. When a user purchases this, they will gain access to our application. So, let's make sure to buy one so we can obtain access to the app after we deploy it.
-<figure><img src="assets/README/your_datatoken.png" alt="Your Datatoken" width="640"/></figure>
+<figure><img src="docs/assets/your_datatoken.png" alt="Your Datatoken" width="640"/></figure>
 
 ### Complete Vercel Configuration
 

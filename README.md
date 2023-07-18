@@ -179,7 +179,7 @@ pnpm dev
 
 Your app template should now be running on [localhost:3000](http://localhost:3000/).
 
-### Building GQL SDK
+## Building GQL SDK
 
 Vercel currently does not support `graphql-generate` as part of the build, so you'll have to do this ahead of time.
 
@@ -192,6 +192,13 @@ git add .
 git commit -m "updating gql"
 git push
 ```
+
+## Additional Readmes
+
+The following READMEs have been created to provide guidance to the reader.
+1. [Improvements and Ideas](/docs/README_improvements_ideas.md)
+1. [Supabase Web3Auth](/docs/README_web3_auth_supabase.md)
+1. [Web3 Tokens and Networks](/docs/README_web3_tokens_and_networks.md)
 
 ## Authors
 

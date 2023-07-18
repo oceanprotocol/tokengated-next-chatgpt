@@ -66,6 +66,7 @@ Before hopping into code, let's launch the app and play with it.
 1. Setup your `public.users` table inside Supabase. We have provided you a screenshot of what ours looks like so you can configure it in the exact same way. <figure><img src="docs/assets/supabase_user_table.png" alt="Create a public.users table" width="640"/></figure> Please note that your `public.users.id` should link to your `auth.users.id` record <figure><img src="docs/assets/table_users_linked_id.png" alt="Link your public.users.id to auth.users.id" width="640"/></figure>
 1. Setup your Supabase Role Level Security (RLS) by executing the [scripts located below](#configure-supabase) inside the Supabase SQL Editor.
 1. Get an [infura API key](https://www.infura.io/)
+1. Get a [Wallet Connect Project ID](https://cloud.walletconnect.com/sign-in)
 1. Hop onto Vercel and [Deploy your forked repository](https://vercel.com/new/) as a new Vercel project and configure your environment variables.
 1. Configure your Vercel->project->settings to rebuild `sdk.ts` by overriding the build command with: `yarn generate && yarn build`
 1. You should now have all the initial ENV_VARS required to deploy the initial version of the app.

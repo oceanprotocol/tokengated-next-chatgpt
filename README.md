@@ -62,7 +62,7 @@ What does this mean?
 Before hopping into code, let's launch the app and play with it.
 1. Get a new [OpenAI API key](https://platform.openai.com/apps)
 1. Deploy a new [DB in Supabase](https://supabase.com/dashboard/sign-in)
-1. Setup your public.user table inside Supabase. We have provided you a screenshot of what ours looks like so you can configure it in the exact same way. <figure><img src="docs/assets/supabase_user_table.png" alt="Create a public.user table" width="640"/></figure>
+1. Setup your `public.user` table inside Supabase. We have provided you a screenshot of what ours looks like so you can configure it in the exact same way. <figure><img src="docs/assets/supabase_user_table.png" alt="Create a public.user table" width="640"/></figure>
 1. Setup your Supabase Role Level Security (RLS) by executing the scripts located here `supabase/seed.sml` inside the Supabase SQL Editor.
 1. Get an [infura API key](https://www.infura.io/)
 1. Fork this repository: [tokengated-next-chatgpt](https://github.com/oceanprotocol/tokengated-next-chatgpt/) via Github, then hop onto Vercel and [Deploy it as a new repository](https://vercel.com/new/).
@@ -82,6 +82,38 @@ NEXT_PUBLIC_WEB3AUTH_MESSAGE="Please sign this message to confirm your identity.
 NEXT_PUBLIC_APP_DOMAN="@yourdomain.com"
 ```
 _Initial Environment Variables required for Vercel app to work_
+
+## Configure Supabase
+In the SQL Editor, we're going to create the remainder of the role-level security policies we'll need to keep the DB secure.
+
+You should already have a `public.users` table from the work you did in [Deploy Vercel App](#deploy-vercel-app)
+
+```
+-- Create view of auth.users and set strict access.
+create view public.auth_users as select * from auth.users;
+revoke all on public.auth_users from anon, authenticated;
+
+-- service-role policy
+CREATE POLICY service_role_access ON public.users
+AS PERMISSIVE FOR ALL
+TO service_role
+USING (auth.role() = 'service_role')
+WITH CHECK (auth.role() = 'service_role');
+
+-- authenticated user policy
+CREATE POLICY authenticated_users_can_write ON public.users
+AS PERMISSIVE FOR UPDATE
+TO authenticated
+USING (auth.role() = 'authenticated')
+WITH CHECK (auth.role() = 'authenticated');
+
+-- web3 auth policy
+CREATE POLICY web3_auth ON public.users
+AS PERMISSIVE FOR UPDATE
+TO authenticated
+USING ((current_setting('request.jwt.claims', true))::json ->> 'address' = address)
+WITH CHECK ((current_setting('request.jwt.claims', true))::json ->> 'address' = address);
+```
 
 ## Publish Datatoken
 

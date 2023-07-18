@@ -6,6 +6,7 @@
 1. Improve bootstrap by reducing the number of APIs/SDKs: Wallet Connect, Infura, others?
 1. Improve bootstrap by automating steps found in the doc and tightening the README.md.
 1. Chats and Chat History aren't working on the original template, fix it
+1. Next edge-runtime was disabled. What's next?
 
 ## Build new products
 1. Expand template to focus on Langchain, Vector DB, and Embeddings

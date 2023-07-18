@@ -109,12 +109,12 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json(
-      { error: 'Internal Server Error' },
+      { error: userError?.message || 'Internal Server Error' },
       { status: 500 }
     )
-  } catch (error) {
+  } catch (error: any) {
     return NextResponse.json(
-      { error: 'Internal Server Error' },
+      { error: error?.message || 'Internal Server Error' },
       { status: 500 }
     )
   }
@@ -131,7 +131,8 @@ const getTTLofUser = async (address: string) => {
   })
 
   if (userOnChain?.user?.id) {
-    const datatoken = process.env.NEXT_PUBLIC_DATATOKEN_ADDRESS?.toLowerCase() || ''
+    const datatoken =
+      process.env.NEXT_PUBLIC_DATATOKEN_ADDRESS?.toLowerCase() || ''
     const orders = await subgraphSDK.GetOrders({
       where: {
         consumer: userOnChain.user.id,

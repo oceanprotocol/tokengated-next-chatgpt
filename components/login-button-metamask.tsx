@@ -6,11 +6,9 @@ import { cn } from '@/lib/utils'
 import { Button, type ButtonProps } from '@/components/ui/button'
 import { IconMetamask, IconSpinner } from '@/components/ui/icons'
 
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation'
 
-import { 
-  useAccount
-} from "wagmi";
+import { useAccount } from 'wagmi'
 
 import { signMessage } from '@wagmi/core'
 
@@ -28,15 +26,17 @@ export function LoginButtonMetamask({
   const [isLoading, setIsLoading] = useState(false)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const router = useRouter()
-  
-  const { address, isConnected } = useAccount();
+
+  const { address, isConnected } = useAccount()
   // const { chains } = useNetwork();
-  
+
   useEffect(() => {
-    if( isAuthenticated ) {
-      router.push('/');
+    if (isAuthenticated) {
+      console.log('User is authenticated, redirecting to home page')
+      router.refresh()
+      router.push('/')
     }
-  }, [isAuthenticated])
+  }, [isAuthenticated, router])
 
   return (
     <Button
@@ -44,8 +44,8 @@ export function LoginButtonMetamask({
       onClick={async () => {
         setIsLoading(true)
         const userAddress = address ? address : ''
-        
-        if(userAddress && isConnected) {
+
+        if (userAddress && isConnected) {
           try {
             // 1. Get a nonce from the server
             const nonceResponse = await fetch(`/api/web3auth/nonce`, {
@@ -54,23 +54,26 @@ export function LoginButtonMetamask({
                 'Content-Type': 'application/json'
               },
               body: JSON.stringify({
-                address: userAddress,
-              }),
-            });
+                address: userAddress
+              })
+            })
 
-            const { user: [user] } = await nonceResponse.json();
-            
+            const {
+              user: [user]
+            } = await nonceResponse.json()
+
             // 2. Ask the user to sign a message
-            const message = process.env.NEXT_PUBLIC_WEB3AUTH_MESSAGE + user.auth.genNonce;
+            const message =
+              process.env.NEXT_PUBLIC_WEB3AUTH_MESSAGE + user.auth.genNonce
             const signedMessage = await signMessage({
-              message: message,
+              message: message
             })
 
             // // 3. Send the signed message to our API
             const response = await fetch(`/api/web3auth/login`, {
               method: 'POST',
               headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json'
               },
               body: JSON.stringify({
                 address: userAddress,
@@ -78,7 +81,7 @@ export function LoginButtonMetamask({
                 nonce: user.auth.genNonce
               })
             })
-        
+
             // Handle the response from the API
             if (response.ok) {
               // The verification was successful
@@ -86,17 +89,17 @@ export function LoginButtonMetamask({
               setIsAuthenticated(true)
             } else {
               // The verification failed
-              console.error('Verification failed!');
+              console.error('Verification failed!')
               setIsAuthenticated(false)
             }
           } catch (err) {
-            console.error('An error occurred:', err);
+            console.error('An error occurred:', err)
           } finally {
-            setIsLoading(false);
+            setIsLoading(false)
           }
         }
-      }}      
-      disabled={isLoading || (!address || !isConnected)}
+      }}
+      disabled={isLoading || !address || !isConnected}
       className={cn(className)}
       {...props}
     >

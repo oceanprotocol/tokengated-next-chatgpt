@@ -86,7 +86,7 @@ export async function POST(req: Request) {
         .eq('address', address)
         .select()
 
-      const ttl = await getTTLofUser(address)
+      const ttl = 300;
 
       if (!ttl) {
         return NextResponse.json({ error: 'Token expired' }, { status: 401 })

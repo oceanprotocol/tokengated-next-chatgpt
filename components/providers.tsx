@@ -21,17 +21,16 @@ import {
   WagmiConfig 
 } from 'wagmi';
 import {
-  mainnet,
-  polygon,
-  goerli,
+  mumbai,
 } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
-    mainnet,
-    polygon,
-    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [goerli] : []),
+    mumbai
+    // mainnet,
+    // polygon,
+    // ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [goerli, mumbai] : []),
   ],
   [publicProvider()]
 );

@@ -20,17 +20,25 @@ import {
   createConfig, 
   WagmiConfig 
 } from 'wagmi';
-import {
-  mumbai,
-} from 'wagmi/chains';
+
 import { publicProvider } from 'wagmi/providers/public';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
-    mumbai
     // mainnet,
     // polygon,
     // ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [goerli, mumbai] : []),
+    {
+      name: 'Mumbai',
+      chainId: 80001,
+      rpcUrls: ['https://rpc-mumbai.maticvigil.com'],
+      blockExplorerUrls: ['https://explorer-mumbai.maticvigil.com'],
+      nativeCurrency: {
+        name: 'Matic',
+        symbol: 'MATIC',
+        decimals: 18,
+      },
+    }
   ],
   [publicProvider()]
 );

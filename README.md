@@ -135,6 +135,20 @@ pnpm dev
 
 Your app template should now be running on [localhost:3000](http://localhost:3000/).
 
+### Building GQL SDK
+
+Vercel currently does not support `graphql-generate` as part of the build, so you'll have to do this ahead of time.
+
+As you write more GQL, please run the `yarn generate` command to update your local GQL library and SDK. This will help you maintain good code and avoid type safety issues.
+
+You can then add the newly built SDK before deploying a new Vercel Build.
+```
+yarn generate
+git add .
+git commit -m "updating gql"
+git push
+```
+
 ## Authors
 
 This scaffolding is an extension of the fantastic [Vercel AI-Chatbot](https://github.com/supabase-community/vercel-ai-chatbot) project.

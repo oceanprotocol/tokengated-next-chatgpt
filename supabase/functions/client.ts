@@ -29,10 +29,10 @@ export const getServerSupabaseClient = () => {
     const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
     const options = {
       global: {
-        headers: { Authorization: `Bearer ${token}` },
-        auth: {
-          persistSession: false
-        }
+        headers: { Authorization: `Bearer ${token}` }
+      },
+      auth: {
+        persistSession: false
       }
     }
     return createClient(url, anonKey, options)

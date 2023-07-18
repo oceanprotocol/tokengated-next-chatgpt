@@ -14,10 +14,11 @@ export const auth = async () => {
     const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
     const headers = {
       global: {
-        headers: { Authorization: `Bearer ${web3jwt}` },
-        auth: { persistSession: false }
-      }
+        headers: { Authorization: `Bearer ${web3jwt}` }
+      },
+      auth: { persistSession: false }
     }
+
     const supabase = createClient(url, anonKey, headers)
 
     const {

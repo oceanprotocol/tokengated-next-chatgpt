@@ -62,9 +62,14 @@ What does this mean?
 Before hopping into code, let's launch the app and play with it.
 1. Get a new [OpenAI API key](https://platform.openai.com/apps)
 1. Deploy a new [DB in Supabase](https://supabase.com/dashboard/sign-in)
+1. Setup your public.user table inside Supabase. We have provided you a screenshot of what ours looks like so you can configure it in the exact same way. <figure><img src="assets/fonts/README/supabase_user_table.png" alt="Create a public.user table" width="640"/></figure>
+1. Setup your Supabase Role Level Security (RLS) by executing the scripts located here `supabase/seed.sml` inside the Supabase SQL Editor.
 1. Get an [infura API key](https://www.infura.io/)
 1. Fork this repository: [tokengated-next-chatgpt](https://github.com/oceanprotocol/tokengated-next-chatgpt/) via Github, then hop onto Vercel and [Deploy it as a new repository](https://vercel.com/new/).
-1. You should now have all the ENV_VARS needed to configure the initial app.
+1. Configure your Vercel->project->settings to rebuild the sdk.ts build by overriding the build command with: `yarn generate && yarn build`
+1. You should now have all the initial ENV_VARS required to deploy the initial version of the app.
+1. Finally, after Vercel is deployed, update your Supabase's Project: [Authentication / URL Configuration / Site URL](https://supabase.com/dashboard/project/) to be your Vercel's app URL.
+
 ```
 OPENAI_API_KEY=your-open-ai-key
 NEXT_PUBLIC_SUPABASE_URL=your-supabase-project-url
@@ -76,13 +81,11 @@ NEXT_PUBLIC_INFURA_API_KEY=your-infura-api-key
 NEXT_PUBLIC_WEB3AUTH_MESSAGE="Please sign this message to confirm your identity. Nonce:"
 NEXT_PUBLIC_APP_DOMAN="@yourdomain.com"
 ```
-1. Setup your vercel to rebuild the sdk.ts build `yarn generate && yarn build`
-1. After Vercel is deployed, update your Supabase's Project: [Authentication / URL Configuration / Site URL](https://supabase.com/dashboard/project/) to be your Vercel's app URL.
+_Initial Environment Variables required for Vercel app to work_
 
 ## Publish Datatoken
 
-We recommend using the [Alchemy Mumbai Testnet](https://www.alchemy.com/overviews/mumbai-testnet) to deploy your datatoken. It will be fast and free.
-1. Let's begin by adding the Mumbai network to your wallet. 
+We recommend using the [Alchemy Mumbai Testnet](https://www.alchemy.com/overviews/mumbai-testnet) to deploy your datatoken. It will be fast and free.  
 ```
 Network Name: Mumbai Testnet
 New RPC URL: https://polygon-mumbai.g.alchemy.com/v2/your-api-key
@@ -90,11 +93,16 @@ Chain ID: 80001
 Currency Symbol: MATIC
 Block Explorer URL: https://mumbai.polygonscan.com/
 ```
-1. Now connect your wallet to the Mumbai network.
+_The Mumbai network_  
+
+1. Let's begin by adding the Mumbai network to your wallet. 
+1. Now connect your wallet to the Mumbai network. <figure><img src="assets/fonts/README/metamask_add_network.png" alt="Metamask Add Network" width="480"/></figure>
 1. Now get your wallet `0x address` for later.
 1. We need some tokens to make transactions, [collect MATIC from this faucet](https://mumbaifaucet.com/) so we can create the Data token.
 1. Make sure to also [collect OCEAN from this faucet](https://faucet.mumbai.oceanprotocol.com/) so you can also buy some tokens.
-1. Deploy a Datatoken (DT) inside the [OCEAN marketplace](https://market.oceanprotocol.com/). On Step-2, select File-type "URL" and use the Vercel url as the address so you can complete the wizard (this architecture doesn't use it). You can now see your datatoken, copy the `0x address`.
+1. Deploy a Datatoken (DT) inside the [OCEAN marketplace](https://market.oceanprotocol.com/). On Step-2, select File-type "URL" and use the Vercel url as the address so you can complete the wizard (this architecture doesn't use it). You can now see your datatoken, copy the `0x address`. <figure><img src="assets/fonts/README/ocean_publish_datatoken.png" alt="Publish your URL Datatoken" width="640"/></figure>
+1. You have now published a Datatoken. When a user purchases this, they will gain access to our application. So, let's make sure to buy one so we can obtain access to the app after we deploy it.
+<figure><img src="assets/fonts/README/your_datatoken.png" alt="Your Datatoken" width="640"/></figure>
 
 ### Complete Vercel Configuration
 
@@ -106,6 +114,7 @@ NEXT_PUBLIC_WEB3AUTH_TTL = 3600
 NEXT_PUBLIC_DATATOKEN_ADDRESS = 0x2eaa179769d1Db4678Ce5FCD93E29F81aD0C5146
 NEXT_PUBLIC_SUBGRAPH_URL = "https://v4.subgraph.mumbai.oceanprotocol.com/subgraphs/name/oceanprotocol/ocean-subgraph"
 ```
+_Ocean Protocol and Datatoken Environment Variables_
 
 User subscriptions are verified at login based on when the Datatoken was purchased + TTL. Users are only authorized to prompt until the subscription expires.
 

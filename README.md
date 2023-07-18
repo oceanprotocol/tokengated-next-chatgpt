@@ -76,10 +76,11 @@ NEXT_PUBLIC_INFURA_API_KEY=your-infura-api-key
 NEXT_PUBLIC_WEB3AUTH_MESSAGE="Please sign this message to confirm your identity. Nonce:"
 NEXT_PUBLIC_APP_DOMAN="@yourdomain.com"
 ```
-1. Before you test, make sure to override your build command with: `yarn generate && yarn build` so Vercel rebuilds the sdk.ts
+1. Setup your vercel to rebuild the sdk.ts build `yarn generate && yarn build`
 1. After Vercel is deployed, update your Supabase's Project: [Authentication / URL Configuration / Site URL](https://supabase.com/dashboard/project/) to be your Vercel's app URL.
 
 ## Publish Datatoken
+
 We recommend using the [Alchemy Mumbai Testnet](https://www.alchemy.com/overviews/mumbai-testnet) to deploy your datatoken. It will be fast and free.
 1. Let's begin by adding the Mumbai network to your wallet. 
 ```
@@ -96,11 +97,12 @@ Block Explorer URL: https://mumbai.polygonscan.com/
 1. Deploy a Datatoken (DT) inside the [OCEAN marketplace](https://market.oceanprotocol.com/). On Step-2, select File-type "URL" and use the Vercel url as the address so you can complete the wizard (this architecture doesn't use it). You can now see your datatoken, copy the `0x address`.
 
 ### Complete Vercel Configuration
+
 You can now complete configuring the Vercel app.
 
 Go back to your Vercel->project->settings->Environment Variables and add the rest of them.
 ```
-NEXT_PUBLIC_WEB3AUTH_TTL = 86400
+NEXT_PUBLIC_WEB3AUTH_TTL = 3600
 NEXT_PUBLIC_DATATOKEN_ADDRESS = 0x2eaa179769d1Db4678Ce5FCD93E29F81aD0C5146
 NEXT_PUBLIC_SUBGRAPH_URL = "https://v4.subgraph.mumbai.oceanprotocol.com/subgraphs/name/oceanprotocol/ocean-subgraph"
 ```

@@ -1,4 +1,4 @@
-<a href="https://chat.vercel.ai/">
+<a href="https://tokengated-next-chatgpt.vercel.app/">
   <img src="docs/assets/tokengated_chatbot.png"/>
   <h1 align="center">Ocean Protocol Tokengated Chatbot</h1>
 </a>

@@ -6605,7 +6605,7 @@ export type GetUserQueryVariables = Exact<{
 }>;
 
 
-export type GetUserQuery = { __typename?: 'Query', user?: { __typename?: 'User', id: string, totalOrders: any, totalSales: any, orders?: Array<{ __typename?: 'Order', createdTimestamp: number, datatoken: { __typename?: 'Token', id: string, isDatatoken: boolean, nft?: { __typename?: 'Nft', id: string } | null } }> | null } | null };
+export type GetUserQuery = { __typename?: 'Query', user?: { __typename?: 'User', id: string, totalOrders: any, totalSales: any } | null };
 
 
 export const GetOrderDocument = gql`
@@ -6682,16 +6682,6 @@ export const GetUserDocument = gql`
     id
     totalOrders
     totalSales
-    orders(orderBy: createdTimestamp, orderDirection: desc) {
-      createdTimestamp
-      datatoken {
-        id
-        isDatatoken
-        nft {
-          id
-        }
-      }
-    }
   }
 }
     `;

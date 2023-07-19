@@ -21,7 +21,7 @@
 
 ## Features
 
-- Create a Web3 Tokengated app where users gain access by [purchasing a DataNFT](https://market.oceanprotocol.com/asset/did:op:6897592e137286774c718ddcb5c3e5177aba5575d868a2f997ebfa3ffaa5213a) on the [Mumbai Network](#publish-datatoken). **PLEASE NOTE:** OpenAI access is rate limited, this is just a demo.
+- Create a Web3 Tokengated app where users gain access by [purchasing a DataNFT](https://market.oceanprotocol.com/asset/did:op:6897592e137286774c718ddcb5c3e5177aba5575d868a2f997ebfa3ffaa5213a) on the [Mumbai Network](#publish-datatoken).
 - Sign a Web3 transaction to identify yourself and login via a custom [Supabase Web3Auth](#supabase-web3auth).
 - Prompt OpenAI (default), Anthropic, Hugging Face, or custom AI chat models and/or LangChain
 - Chat History with [Supabase Postgres DB](https://supabase.com)

@@ -63,8 +63,9 @@ Before hopping into code, let's launch the app and play with it.
 1. Fork this repository: [tokengated-next-chatgpt](https://github.com/oceanprotocol/tokengated-next-chatgpt/) via Github.
 1. Get a new [OpenAI API key](https://platform.openai.com/apps)
 1. Deploy a new [DB in Supabase](https://supabase.com/dashboard/sign-in)
-1. Setup your `public.users` table inside Supabase. We have provided you a screenshot of what ours looks like so you can configure it in the exact same way. <figure><img src="docs/assets/supabase_user_table.png" alt="Create a public.users table" width="640"/></figure> Please note that your `public.users.id` should link to your `auth.users.id` record <figure><img src="docs/assets/table_users_linked_id.png" alt="Link your public.users.id to auth.users.id" width="640"/></figure>
-1. Setup your Supabase Role Level Security (RLS) by executing the [scripts located below](#configure-supabase) inside the Supabase SQL Editor.
+1. Setup your `public.users` table inside Supabase. We have provided you a screenshot of what ours looks like so you can configure it in the exact same way. <figure><img src="docs/assets/supabase_user_table.png" alt="Create a public.users table" width="640"/></figure>.
+1. Please note that your `public.users.id` should link to your `auth.users.id` record <figure><img src="docs/assets/table_users_linked_id.png" alt="Link your public.users.id to auth.users.id" width="640"/></figure>. **Important:** Make sure you make the `id` column nullable.
+1. Setup your Supabase Row-Level Security (RLS) by executing the [scripts located below](#configure-supabase) inside the Supabase SQL Editor.
 1. Get an [infura API key](https://www.infura.io/)
 1. Get a [Wallet Connect Project ID](https://cloud.walletconnect.com/sign-in)
 1. Hop onto Vercel and [Deploy your forked repository](https://vercel.com/new/) as a new Vercel project and configure your environment variables.
@@ -119,7 +120,7 @@ WITH CHECK ((current_setting('request.jwt.claims', true))::json ->> 'address' = 
 
 ## Publish Datatoken
 
-We recommend using the [Alchemy Mumbai Testnet](https://www.alchemy.com/overviews/mumbai-testnet) to deploy your datatoken. It will be fast and free.  
+We recommend using the [Mumbai Testnet](https://www.alchemy.com/overviews/mumbai-testnet) to deploy your datatoken. It will be fast and free.  
 ```
 Network Name: Mumbai Testnet
 New RPC URL: https://polygon-mumbai.g.alchemy.com/v2/your-api-key
@@ -144,9 +145,9 @@ You can now complete configuring the Vercel app.
 
 Go back to your Vercel->project->settings->Environment Variables and add the rest of them.
 ```
-NEXT_PUBLIC_WEB3AUTH_TTL = 3600
-NEXT_PUBLIC_DATATOKEN_ADDRESS = 0x2eaa179769d1Db4678Ce5FCD93E29F81aD0C5146
-NEXT_PUBLIC_SUBGRAPH_URL = "https://v4.subgraph.mumbai.oceanprotocol.com/subgraphs/name/oceanprotocol/ocean-subgraph"
+NEXT_PUBLIC_WEB3AUTH_TTL=3600
+NEXT_PUBLIC_DATATOKEN_ADDRESS=0x2eaa179769d1Db4678Ce5FCD93E29F81aD0C5146
+NEXT_PUBLIC_SUBGRAPH_URL=https://v4.subgraph.mumbai.oceanprotocol.com/subgraphs/name/oceanprotocol/ocean-subgraph
 ```
 _Ocean Protocol and Datatoken Environment Variables_
 
